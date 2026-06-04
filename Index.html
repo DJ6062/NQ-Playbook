@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The NQ War Room Method</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #080808;
+      --surface:   #111111;
+      --surface2:  #171717;
+      --border:    #242424;
+      --orange:    #ff6a00;
+      --orange2:   #ff9500;
+      --green:     #00e87a;
+      --red:       #ff2d55;
+      --yellow:    #ffd60a;
+      --text:      #e8e8e8;
+      --muted:     #888888;
+      --dim:       #444444;
+      --glow:      0 0 20px rgba(255,106,0,0.35);
+      --glow-sm:   0 0 8px  rgba(255,106,0,0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── SCANLINE OVERLAY ─────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.04) 2px,
+        rgba(0,0,0,0.04) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── TYPOGRAPHY ───────────────────────────────────────────── */
+    h1, h2, h3 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; line-height: 1.1; }
+    code, .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,106,0,0.08) 0%, transparent 70%),
+        var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--orange);
+      border: 1px solid rgba(255,106,0,0.4);
+      background: rgba(255,106,0,0.06);
+      padding: 8px 16px;
+      white-space: nowrap;
+    }
+
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(64px, 12vw, 140px);
+      line-height: 0.9;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--orange);
+      text-shadow: var(--glow);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 520px;
+      margin: 20px auto 40px;
+      line-height: 1.6;
+    }
+
+    .start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--orange);
+      color: #000;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 16px 36px;
+      box-shadow: var(--glow);
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .start-btn:hover { background: var(--orange2); box-shadow: 0 0 30px rgba(255,106,0,0.5); transform: translateY(-1px); }
+
+    /* ── SECTION WRAPPER ──────────────────────────────────────── */
+    .section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 100px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .section h2 {
+      font-size: clamp(42px, 6vw, 72px);
+      color: var(--text);
+      margin-bottom: 48px;
+      border-bottom: 2px solid var(--orange);
+      padding-bottom: 16px;
+    }
+
+    /* ── CONCEPT GRID ─────────────────────────────────────────── */
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    .concept-card {
+      background: var(--surface);
+      padding: 28px 24px;
+    }
+
+    .concept-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .concept-card h3 {
+      font-size: 22px;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+
+    .concept-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .concept-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--dim); text-transform: uppercase; margin-top: 10px; }
+
+    /* ── DIAGRAM PLACEHOLDER ──────────────────────────────────── */
+    .diagram-box {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin: 40px 0;
+    }
+
+    .diagram-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+
+    .diagram-inner {
+      background: #0d0d0d;
+      border: 1px dashed var(--dim);
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .diagram-inner p { font-size: 13px; color: var(--dim); font-style: italic; }
+
+    /* ── STEPS ────────────────────────────────────────────────── */
+    .steps { display: flex; flex-direction: column; gap: 2px; margin: 40px 0; }
+
+    .step {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+
+    .step:hover { border-color: rgba(255,106,0,0.4); }
+
+    .step-num {
+      background: rgba(255,106,0,0.08);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 24px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      color: var(--orange);
+      text-shadow: var(--glow-sm);
+    }
+
+    .step-body { padding: 24px 28px; }
+
+    .step-body h3 {
+      font-size: 22px;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .step-body p { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 14px; }
+
+    .step-rules { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+
+    .step-rule {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text);
+      padding: 8px 12px;
+      background: rgba(255,106,0,0.05);
+      border-left: 2px solid var(--orange);
+    }
+
+    .step-rule.green { border-left-color: var(--green); background: rgba(0,232,122,0.05); }
+    .step-rule.red   { border-left-color: var(--red);   background: rgba(255,45,85,0.05);  }
+
+    /* ── TIMELINE ─────────────────────────────────────────────── */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    .tl-slot {
+      background: var(--surface);
+      padding: 20px 16px;
+      text-align: center;
+    }
+
+    .tl-slot.active {
+      background: rgba(255,106,0,0.08);
+      border-top: 2px solid var(--orange);
+    }
+
+    .tl-slot.avoid {
+      background: rgba(255,45,85,0.04);
+      border-top: 2px solid var(--red);
+    }
+
+    .tl-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .tl-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .tl-slot.active .tl-label { color: var(--orange); }
+    .tl-slot.avoid  .tl-label { color: var(--red); }
+
+    .tl-note { font-size: 11px; color: var(--dim); }
+
+    /* ── ROUTINE ──────────────────────────────────────────────── */
+    .routine { display: flex; flex-direction: column; gap: 2px; margin: 40px 0; }
+
+    .routine-step {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .routine-time {
+      background: rgba(255,106,0,0.06);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--orange);
+      text-align: center;
+      padding: 12px 8px;
+    }
+
+    .routine-body { padding: 20px 24px; }
+    .routine-body h3 { font-size: 20px; color: var(--text); margin-bottom: 6px; }
+    .routine-body p  { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+
+    .ask-block {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--orange2);
+      padding: 10px 14px;
+      background: rgba(255,149,0,0.06);
+      border-left: 2px solid var(--orange2);
+      margin-top: 10px;
+    }
+
+    /* ── GLOSSARY ─────────────────────────────────────────────── */
+    .glossary { display: flex; flex-direction: column; gap: 1px; margin: 40px 0; background: var(--border); }
+
+    .term {
+      background: var(--surface);
+      padding: 24px 28px;
+      transition: background 0.15s;
+    }
+
+    .term:hover { background: var(--surface2); }
+
+    .term-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      color: var(--orange);
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+    }
+
+    .term p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .term-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6px; }
+
+    /* ── MISTAKES ─────────────────────────────────────────────── */
+    .mistakes { display: flex; flex-direction: column; gap: 2px; margin: 40px 0; }
+
+    .mistake {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      background: var(--surface);
+      padding: 24px 28px;
+    }
+
+    .mistake-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .mistake-x {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .mistake h3 { font-size: 22px; color: var(--text); }
+    .mistake p  { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 12px; }
+
+    .fix {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--green);
+      padding: 10px 14px;
+      background: rgba(0,232,122,0.05);
+      border-left: 2px solid var(--green);
+    }
+
+    /* ── CHECKLIST ────────────────────────────────────────────── */
+    .checklist-group { margin: 32px 0; }
+
+    .checklist-group-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 1px solid transparent;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .check-item:hover { background: var(--surface2); border-color: rgba(255,106,0,0.2); }
+    .check-item.checked { background: rgba(0,232,122,0.04); border-color: rgba(0,232,122,0.15); }
+
+    .check-box {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--dim);
+      flex-shrink: 0;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .check-item.checked .check-box {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .check-item.checked .check-box::after {
+      content: '✓';
+      font-size: 13px;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .check-text { flex: 1; }
+    .check-main { font-size: 15px; color: var(--text); line-height: 1.5; }
+    .check-item.checked .check-main { color: var(--muted); text-decoration: line-through; }
+    .check-sub  { font-size: 12px; color: var(--dim); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+
+    .checklist-reset {
+      margin-top: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--dim);
+      padding: 10px 20px;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.15s;
+    }
+
+    .checklist-reset:hover { border-color: var(--orange); color: var(--orange); }
+
+    .checklist-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+
+    .checklist-status span { color: var(--orange); }
+
+    /* ── MENTAL GAME ──────────────────────────────────────────── */
+    .mental-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    .mental-card {
+      background: var(--surface);
+      padding: 32px 28px;
+    }
+
+    .mental-icon { font-size: 32px; margin-bottom: 16px; }
+
+    .mental-card h3 {
+      font-size: 24px;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .mental-card p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+    /* ── QUOTE ────────────────────────────────────────────────── */
+    .quote {
+      border-left: 3px solid var(--orange);
+      padding: 24px 32px;
+      margin: 48px 0;
+      background: rgba(255,106,0,0.04);
+    }
+
+    .quote p {
+      font-size: 19px;
+      color: var(--text);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ── RULE BADGES ──────────────────────────────────────────── */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .rule-card {
+      background: var(--surface);
+      padding: 20px 22px;
+    }
+
+    .rule-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+
+    .rule-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .rule-desc { font-size: 12px; color: var(--dim); }
+
+    /* ── FOOTER ───────────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: 80px 32px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer h2 {
+      font-size: clamp(36px, 6vw, 80px);
+      color: var(--orange);
+      text-shadow: var(--glow);
+      margin-bottom: 16px;
+    }
+
+    .footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* ── NAV ──────────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 52px;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: var(--orange);
+      letter-spacing: 0.08em;
+      text-shadow: var(--glow-sm);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--orange); }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .section { padding: 64px 20px; }
+    }
+
+    /* ── MISC UTILITIES ───────────────────────────────────────── */
+    .orange { color: var(--orange); }
+    .green  { color: var(--green);  }
+    .red    { color: var(--red);    }
+    .mono   { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+    .info-row {
+      display: flex;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .info-cell {
+      flex: 1;
+      background: var(--surface);
+      padding: 16px 20px;
+    }
+
+    .info-cell .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 4px;
+    }
+
+    .info-cell .val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: var(--orange);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">NQ WAR ROOM</div>
+  <ul class="nav-links">
+    <li><a href="#s01">Why Price Moves</a></li>
+    <li><a href="#s02">4-Step Model</a></li>
+    <li><a href="#s04">Asia Session</a></li>
+    <li><a href="#s05">Routine</a></li>
+    <li><a href="#s08">Checklist</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding-top:120px;">
+  <div class="badge-row">
+    <div class="badge">4 Steps To Every Trade</div>
+    <div class="badge">Asia Session Only — 8:15–11PM ET</div>
+    <div class="badge">Min 1:1 / Target 2:1 R:R</div>
+    <div class="badge">MNQ Futures</div>
+  </div>
+  <div class="hero-eyebrow">Beginner's Guide — Read Top to Bottom</div>
+  <h1>THE <em>NQ</em><br>WAR ROOM<br>METHOD</h1>
+  <p class="hero-sub">How to trade NQ futures using smart money concepts — liquidity sweeps, market structure, and the iFVG entry model. Every concept explained from scratch, with visual examples.</p>
+  <a href="#s01" class="start-btn">START HERE ↓</a>
+</section>
+
+<!-- ══ SECTION 01 ═══════════════════════════════════════════════ -->
+<section class="section" id="s01">
+  <div class="section-label">Section 01</div>
+  <h2>Why Price Really Moves</h2>
+  <p style="color:var(--muted);margin-bottom:40px;">Before learning the entry model, you need to understand WHO moves NQ and WHY. This changes everything about how you read a chart — especially during the Asia session.</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🏦</div>
+      <h3>Smart Money</h3>
+      <p>Banks, hedge funds, and institutions move hundreds of millions of dollars. They can't just click "buy" — they need massive liquidity to fill orders without moving price against themselves. They need your stop losses.</p>
+      <div class="concept-tag">THE INSTITUTIONS</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">👥</div>
+      <h3>Retail Traders</h3>
+      <p>Regular traders using chart patterns, support/resistance, and indicators. They cluster stop losses in predictable places — just above recent highs or just below recent lows. This makes them easy to hunt.</p>
+      <div class="concept-tag">THE CROWD</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Liquidity Pools</h3>
+      <p>When many traders put stop losses above a high or below a low, those stops form a pool of orders. Smart money drives price to those stops, fills their own position in the opposite direction, then moves price the other way.</p>
+      <div class="concept-tag">THE TARGET</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>The Manipulation Cycle</h3>
+      <p>Drive up → grab sell stops above highs → short the market → drive down. Or drive down → grab buy stops below lows → go long → drive up. This cycle repeats at every timeframe — including Asia session.</p>
+      <div class="concept-tag">THE EDGE</div>
+    </div>
+  </div>
+
+  <div class="diagram-box">
+    <div class="diagram-title">THE LIQUIDITY HUNT — HOW SMART MONEY TRAPS RETAIL TRADERS</div>
+    <div class="diagram-inner">
+      <p>Upload a chart screenshot showing the liquidity hunt cycle on MNQ during Asia session</p>
+    </div>
+  </div>
+
+  <div class="quote">
+    <p>"Price doesn't break a level because it's strong. It breaks a level because the orders sitting above or below it are worth collecting."</p>
+  </div>
+
+  <p style="color:var(--muted);">Once you see this, you can never unsee it. Every sweep becomes a signal, not a mystery. The Asia session is especially clean because the algorithmic delivery is less contested — fewer institutions, less news-driven noise, more predictable directional movement.</p>
+</section>
+
+<!-- ══ SECTION 02 ═══════════════════════════════════════════════ -->
+<section class="section" id="s02">
+  <div class="section-label">Section 02</div>
+  <h2>The 4-Step Entry Model</h2>
+  <p style="color:var(--muted);margin-bottom:40px;">Every trade — no exceptions — requires all 4 steps in order. This is the same framework running inside the NQ War Room bot. Miss one step and you do not have a trade.</p>
+
+  <div class="diagram-box">
+    <div class="diagram-title">THE COMPLETE 4-STEP TRADE — BEARISH EXAMPLE (SHORT)</div>
+    <div class="diagram-inner">
+      <p>Upload a chart screenshot showing Steps 1–4 on MNQ during Asia session</p>
+    </div>
+  </div>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>HTF PD Array — Where Are We?</h3>
+        <p>On the 4-hour or daily chart, identify which zone price is sitting in. For this playbook, a valid HTF zone must be one of three types: a <strong class="orange">BPR</strong> (Balanced Price Range), an <strong class="orange">iFVG</strong> (an FVG that was previously traded through and flipped polarity), or a <strong class="orange">Layered OB+FVG</strong> (an Order Block and a Fair Value Gap formed in different sessions, spatially overlapping). Standard Order Blocks alone do not qualify.</p>
+        <div class="step-rules">
+          <div class="step-rule green">Premium zone: only look for SHORT trades — price is expensive</div>
+          <div class="step-rule green">Discount zone: only look for LONG trades — price is cheap</div>
+          <div class="step-rule">Equilibrium (50%): wait — no edge until price reaches a zone</div>
+          <div class="step-rule red">No valid HTF zone present = No trade, full stop</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Check Point Sweep + FVG — The Hunt</h3>
+        <p>Once price is inside the HTF zone, watch for it to sweep a Check Point (an internal liquidity pool — equal highs/lows, prior swing, resting stops) with a wick on the 1m or 5m timeframe. The wick must reject — it closes back inside the zone, not beyond it. The same sweeping leg must create a Fair Value Gap as it reverses out of the level.</p>
+        <div class="step-rules">
+          <div class="step-rule green">Bullish sweep: wick below an internal low, candle closes back above → SSL hunted</div>
+          <div class="step-rule green">Bearish sweep: wick above an internal high, candle closes back below → BSL hunted</div>
+          <div class="step-rule">Confirm on: 1m or 5m chart wick rejection — close must be back inside the zone</div>
+          <div class="step-rule red">No FVG from the sweeping leg = setup not armed yet, wait</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Displacement + MSS Confirmation</h3>
+        <p>After the sweep, a single strong candle with a clear body (not a wick) must close through the Fair Value Gap in the opposite direction. This is the displacement candle — it inverts the FVG into an iFVG. Additionally, the 5m chart must show a Market Structure Shift: the last swing point formed during the sweep wick is broken. Both must be true. The volume on the displacement candle must be ≥ 1.5× the 20-period volume average on the 1m — this is the Volume Filter. Low-volume displacement = the algorithm isn't running with conviction.</p>
+        <div class="step-rules">
+          <div class="step-rule green">Long MSS: displacement closes UP through FVG + breaks swing high from sweep wick</div>
+          <div class="step-rule green">Short MSS: displacement closes DOWN through FVG + breaks swing low from sweep wick</div>
+          <div class="step-rule">Volume filter: displacement candle volume ≥ 1.5× SMA(volume, 20) on 1m</div>
+          <div class="step-rule red">Wick displacement (not body) = does not count — wait for a body close</div>
+          <div class="step-rule red">Below-average volume displacement = SKIP — setup fails the volume filter</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>iFVG Entry — The Execution</h3>
+        <p>After the MSS and displacement candle, price will pull back into the iFVG zone. This is your entry zone. Place a limit order at the near edge of the iFVG before price arrives. Stop loss goes at the last swing low (for longs) or last swing high (for shorts) — the actual wick of the sweep. Target is 30 points (1R) or 60 points (2R) when the next HTF liquidity pool sits beyond 60 points. Enter on the first retest — if price runs without pulling back, you missed it. Do not chase.</p>
+        <div class="step-rules">
+          <div class="step-rule green">Entry: limit order at near edge of iFVG on first pullback — set before price arrives</div>
+          <div class="step-rule green">Stop loss: the sweep wick low/high — this level defines your risk</div>
+          <div class="step-rule green">Target: 30 pts (1R) default or 60 pts (2R) when structure supports it</div>
+          <div class="step-rule">Limit order cancels: 15 minutes after displacement candle OR at 11:00 PM ET</div>
+          <div class="step-rule red">Missed the first retest = trade is over. Next setup is always coming.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ SECTION 03 ═══════════════════════════════════════════════ -->
+<section class="section" id="s03">
+  <div class="section-label">Section 03</div>
+  <h2>The iFVG — Your Entry Zone</h2>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📐</div>
+      <h3>What is an FVG?</h3>
+      <p>Take three consecutive candles. If candle 1's low is higher than candle 3's high (bullish) or candle 1's high is lower than candle 3's low (bearish) — price moved so fast it left an imbalance. This gap is a magnet that price eventually fills.</p>
+      <div class="concept-tag">FVG BASICS</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔄</div>
+      <h3>What Makes it an iFVG?</h3>
+      <p>When a reversal candle closes THROUGH the original FVG with a strong body in the opposite direction, it "inverts" the gap. The zone that was a bearish imbalance becomes bullish support. This is the signal the bot fires on.</p>
+      <div class="concept-tag">iFVG SIGNAL</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏗️</div>
+      <h3>Layered OB + FVG</h3>
+      <p>An Order Block from one session (e.g. Monday) and an FVG from a later session (e.g. Thursday) that spatially overlap. The OB and FVG can have opposite polarity — what matters is the dense concentration of resting orders at that price level.</p>
+      <div class="concept-tag">HIGH-CONVICTION ZONE</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⏱️</div>
+      <h3>Enter on the First Touch</h3>
+      <p>When price pulls back into the iFVG zone after the MSS, that first touch is the entry. Set your limit order at the near edge of the iFVG before price arrives. Miss the first touch and the trade is over. Never chase.</p>
+      <div class="concept-tag">FIRST TOUCH = ENTRY</div>
+    </div>
+  </div>
+
+  <div class="diagram-box">
+    <div class="diagram-title">HOW A FAIR VALUE GAP BECOMES AN iFVG — STEP BY STEP</div>
+    <div class="diagram-inner">
+      <p>Upload a chart screenshot showing FVG → Displacement → iFVG retest on MNQ 1m</p>
+    </div>
+  </div>
+
+  <div class="quote">
+    <p>"The institutions that created the original FVG left unfilled orders in that zone. When price returns to the iFVG, it's returning to where those institutional orders are waiting. Retail stops got hunted at the sweep — now the real move begins."</p>
+  </div>
+</section>
+
+<!-- ══ SECTION 04 ═══════════════════════════════════════════════ -->
+<section class="section" id="s04">
+  <div class="section-label">Section 04</div>
+  <h2>Asia Session — The Window</h2>
+  <p style="color:var(--muted);margin-bottom:40px;">The exact same setup that works in the Asia window will fail outside it. We trade ONE window, every night. No exceptions.</p>
+
+  <div class="info-row">
+    <div class="info-cell">
+      <div class="label">Window Opens</div>
+      <div class="val">8:15 PM ET</div>
+    </div>
+    <div class="info-cell">
+      <div class="label">Sweet Spot</div>
+      <div class="val">8:30+ PM ET</div>
+    </div>
+    <div class="info-cell">
+      <div class="label">Window Closes</div>
+      <div class="val">11:00 PM ET</div>
+    </div>
+    <div class="info-cell">
+      <div class="label">Instrument</div>
+      <div class="val">MNQ</div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-slot avoid">
+      <div class="tl-time">6:00 PM</div>
+      <div class="tl-label">PREP</div>
+      <div class="tl-note">recap + levels</div>
+    </div>
+    <div class="tl-slot avoid">
+      <div class="tl-time">6:30–7:45</div>
+      <div class="tl-label">WARM UP</div>
+      <div class="tl-note">30-min pings</div>
+    </div>
+    <div class="tl-slot avoid">
+      <div class="tl-time">7:30–8:15</div>
+      <div class="tl-label">SETUP</div>
+      <div class="tl-note">mark levels</div>
+    </div>
+    <div class="tl-slot avoid">
+      <div class="tl-time">8:00–8:15</div>
+      <div class="tl-label">NOISE</div>
+      <div class="tl-note">skip first 15 min</div>
+    </div>
+    <div class="tl-slot active">
+      <div class="tl-time">8:15 PM ★</div>
+      <div class="tl-label">WINDOW OPEN</div>
+      <div class="tl-note">Hermes live</div>
+    </div>
+    <div class="tl-slot active">
+      <div class="tl-time">8:30–10:30</div>
+      <div class="tl-label">SWEET SPOT</div>
+      <div class="tl-note">highest quality</div>
+    </div>
+    <div class="tl-slot active">
+      <div class="tl-time">10:30–11:00</div>
+      <div class="tl-label">A+ ONLY</div>
+      <div class="tl-note">clean setups only</div>
+    </div>
+    <div class="tl-slot avoid">
+      <div class="tl-time">11:00 PM</div>
+      <div class="tl-label">CLOSED</div>
+      <div class="tl-note">laptop closes</div>
+    </div>
+  </div>
+
+  <div class="concept-grid" style="margin-top:0;">
+    <div class="concept-card">
+      <div class="concept-icon">📉</div>
+      <h3>Why Asia Works</h3>
+      <p>Asia session price action is smoother and more directional. Fewer institutions competing, less news-driven noise. The algorithm delivers more readably here. Internal-to-external range expansions are the cleanest expression of the pattern in this window.</p>
+      <div class="concept-tag">THE EDGE</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⏰</div>
+      <h3>The First 15 Minutes</h3>
+      <p>8:00–8:15 PM ET is setup formation and noise. Setups that trigger before 8:30 PM are treated with extreme caution. The sweet spot starts after the first 15–30 minutes when the session finds its direction.</p>
+      <div class="concept-tag">TIMING FILTER</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h3>Why MNQ</h3>
+      <p>Risk management. Drawdowns of 60–80 points occur even on valid setups. MNQ at $2/point keeps these survivable ($120–$160) vs NQ at $20/point ($1,200–$1,600). We graduate to NQ only after 3 consecutive profitable months.</p>
+      <div class="concept-tag">INSTRUMENT CHOICE</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🚫</div>
+      <h3>What We Don't Trade</h3>
+      <p>We do not trade London (2–5 AM), NY AM (9:30 AM–12 PM), or any other session with this playbook. Different liquidity regime, different rules required. This playbook is Asia-only.</p>
+      <div class="concept-tag">STAY IN YOUR LANE</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 05 ═══════════════════════════════════════════════ -->
+<section class="section" id="s05">
+  <div class="section-label">Section 05</div>
+  <h2>Top-Down Evening Routine</h2>
+  <p style="color:var(--muted);margin-bottom:40px;">Every evening flows from the highest timeframe to the lowest — macro context first, then the setup, then the entry. By the time the window opens, you have complete context behind you.</p>
+
+  <div class="routine">
+
+    <div class="routine-step">
+      <div class="routine-time">7:30 PM<br>DAILY<br>+ 4H</div>
+      <div class="routine-body">
+        <h3>Step 1 — HTF Bias Check</h3>
+        <p>Open the Daily chart. Look at the last 2 daily candles — both the same color? That's your bias. Do the same for 4H (last 2 candles). Then check the 1H (last 4 candles). All three must agree or there is no trade tonight. Check price vs 100 EMA on each timeframe — price above = bullish bias OK, below = bearish bias OK, straddling = stop.</p>
+        <div class="ask-block">ASK: Are Daily, 4H, and 1H all same color AND aligned with 100 EMA? If not → close the laptop.</div>
+      </div>
+    </div>
+
+    <div class="routine-step">
+      <div class="routine-time">7:45 PM<br>LEVELS</div>
+      <div class="routine-body">
+        <h3>Step 2 — Mark Your Levels</h3>
+        <p>Mark the previous NY session H/L as horizontal rays. As the week progresses, also mark any unmitigated highs/lows from earlier sessions (Monday London high if still untagged, etc.). Identify the equilibrium of the current leg (50% of the active swing). Mark all check points inside HTF BPRs, FVGs, and iFVGs — these are your sweep targets. Plot 100 EMA on 15m, 5m, 1m for use during entry execution.</p>
+        <div class="ask-block">ASK: Are all key liquidity levels drawn? Can I identify the check points inside the HTF zone?</div>
+      </div>
+    </div>
+
+    <div class="routine-step">
+      <div class="routine-time">7:55 PM<br>FILTER</div>
+      <div class="routine-body">
+        <h3>Step 3 — Run the Disqualifiers</h3>
+        <p>Check the economic calendar (ForexFactory). Any major Asian central bank event inside 8:15–11 PM? If yes — no trade. Run the personal state check: less than 6 hours sleep? → half size. Trying to make back a loss? → skip. Emotionally activated? → skip. If "should I trade?" takes more than 3 seconds to answer — the answer is no.</p>
+        <div class="ask-block">ASK: Is the window clear? Am I in the right headspace to trade?</div>
+      </div>
+    </div>
+
+    <div class="routine-step">
+      <div class="routine-time">8:00 PM<br>STRUCTURE</div>
+      <div class="routine-body">
+        <h3>Step 4 — Confirm Market Structure</h3>
+        <p>Look at the 1H and 4H charts. You MUST see clear HH/HL (uptrend) or LH/LL (downtrend) structure. If price is in consolidation — overlapping wicks, no clean swings, indecision — close the laptop. If you cannot identify the trend in 30 seconds, there is no trend.</p>
+        <div class="ask-block">ASK: Can I identify HH/HL or LH/LL in 30 seconds? If it requires debate → consolidation → no trade.</div>
+      </div>
+    </div>
+
+    <div class="routine-step">
+      <div class="routine-time">8:15 PM<br>★ LIVE</div>
+      <div class="routine-body">
+        <h3>Step 5 — Wait for the Setup (8:15 PM+)</h3>
+        <p>Window is open. Hermes is watching. Watch for price to approach the HTF zone with velocity — not drifting in, shooting in. When price enters the zone on 1m, watch for the check point sweep. When the FVG forms off the sweeping leg and the displacement candle closes through it (with volume ≥ 1.5× SMA), set your limit order at the iFVG near edge before price arrives.</p>
+        <div class="ask-block">ASK: Does this setup hit all 4 steps? Is there a Discord alert from Hermes? What is the confluence score?</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ SECTION 06 ═══════════════════════════════════════════════ -->
+<section class="section" id="s06">
+  <div class="section-label">Section 06</div>
+  <h2>Key Terms — Plain English</h2>
+  <p style="color:var(--muted);margin-bottom:40px;">Learn these terms before you start looking at charts. Every term connects directly to the 4-step model.</p>
+
+  <div class="glossary">
+    <div class="term">
+      <div class="term-name">BPR — Balanced Price Range</div>
+      <p>A stacked Fair Value Gap where both sides of an inefficiency are present — a bullish FVG and a bearish FVG overlap at the same price level, creating a balanced zone. This is one of the three valid HTF zones for this playbook. Where both sides of the market have unfilled orders.</p>
+      <span class="term-tag">Valid HTF Zone Type 1</span>
+    </div>
+    <div class="term">
+      <div class="term-name">iFVG — Inverted Fair Value Gap</div>
+      <p>A Fair Value Gap (4H or higher) that price has traded through in the opposite direction. The zone flipped polarity — old bearish imbalance becomes bullish support, or vice versa. This flip is what creates the highest-conviction entry zones in the playbook.</p>
+      <span class="term-tag">Valid HTF Zone Type 2</span>
+    </div>
+    <div class="term">
+      <div class="term-name">Layered OB + FVG</div>
+      <p>An Order Block and a Fair Value Gap that were formed in different sessions (temporally separated) but occupy the same or adjacent price space. The OB and FVG do not need to share polarity — what matters is the dense concentration of resting orders at that level. The FVG typically sits between current price and the OB, meaning price crosses through the FVG to reach the OB.</p>
+      <span class="term-tag">Valid HTF Zone Type 3</span>
+    </div>
+    <div class="term">
+      <div class="term-name">Check Point</div>
+      <p>An internal liquidity pool sitting INSIDE a larger HTF zone. Equal highs, equal lows, or prior swing points that resting stops have clustered around. When price sweeps a check point inside the zone (not just any random level), that sweep is what arms the setup. This is more selective than a standard liquidity sweep.</p>
+      <span class="term-tag">Step 2 Trigger</span>
+    </div>
+    <div class="term">
+      <div class="term-name">Displacement</div>
+      <p>A fast, one-directional move with a strong candle body (not a wick) that closes through the FVG created by the sweep leg. One displacement candle is enough. This candle must show volume ≥ 1.5× the 20-period average — that volume confirms the algorithm is running with real conviction, not a false move.</p>
+      <span class="term-tag">Step 3 — Volume Filter</span>
+    </div>
+    <div class="term">
+      <div class="term-name">Market Structure Shift (MSS)</div>
+      <p>When the last swing high/low formed DURING the sweep wick gets broken, structure has officially shifted. On this playbook, MSS is confirmed on the 5m timeframe. Without MSS, the displacement alone is not enough — you need the structural break to confirm the reversal is real.</p>
+      <span class="term-tag">Step 3 — Confirmation</span>
+    </div>
+    <div class="term">
+      <div class="term-name">Premium vs Discount</div>
+      <p>The 50% midpoint of the current swing range. Above 50% = Premium (expensive) = short setups only. Below 50% = Discount (cheap) = long setups only. Used as a filter alongside the 100 EMA to confirm HTF zone alignment. Never take a long in premium or a short in discount.</p>
+      <span class="term-tag">Bias Filter</span>
+    </div>
+    <div class="term">
+      <div class="term-name">Same-Color Candle Bias Rule</div>
+      <p>On Daily: last 2 candles same color = bias confirmed. On 4H: last 2 candles same color + matching Daily = confirmed. On 1H: last 4 candles same color + matching D/4H = confirmed. If any timeframe breaks the alignment or has mixed colors, there is no clean bias = no trade tonight. This is the primary bias engine for this playbook.</p>
+      <span class="term-tag">Section 2.1 — Bias Check</span>
+    </div>
+    <div class="term">
+      <div class="term-name">Second-Chance Rule</div>
+      <p>If the initial stop loss is taken out by a sweep of the stop level itself, that stop-out can qualify as a new check point. If the FULL setup sequence (steps 2–4) re-forms off this new sweep, ONE more entry is allowed. This is the only re-entry condition in the playbook. The second-chance trade must not push the session past the daily loss limit.</p>
+      <span class="term-tag">Risk Rule</span>
+    </div>
+    <div class="term">
+      <div class="term-name">HH / HL / LH / LL</div>
+      <p>Higher Highs + Higher Lows = uptrend (bullish, look for longs only). Lower Highs + Lower Lows = downtrend (bearish, look for shorts only). Neither present = consolidation = close the laptop. This structural check is the final disqualifier before the window opens.</p>
+      <span class="term-tag">Section 2.5 — Structure Check</span>
+    </div>
+    <div class="term">
+      <div class="term-name">BSL / SSL — Buyside / Sellside Liquidity</div>
+      <p>BSL: stop losses from shorts sitting ABOVE highs. Smart money drives price up to grab these, fills their own shorts, then drives down. SSL: stop losses from longs sitting BELOW lows. Equal highs = massive BSL cluster. Equal lows = massive SSL cluster. These are the check points you're hunting inside the HTF zones.</p>
+      <span class="term-tag">Liquidity Mechanics</span>
+    </div>
+    <div class="term">
+      <div class="term-name">Volume Filter (D10)</div>
+      <p>A hard disqualifier: the displacement candle (Step 3) must trade on volume ≥ 1.5× the 20-period simple moving average of volume on the 1m timeframe. If displacement is on below-average volume, the algorithm isn't running with conviction. The iFVG may look valid but the move won't carry to target. Hermes checks this automatically.</p>
+      <span class="term-tag">Disqualifier D10 — Hard Filter</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 07 ═══════════════════════════════════════════════ -->
+<section class="section" id="s07">
+  <div class="section-label">Section 07</div>
+  <h2>Mistakes That Destroy Accounts</h2>
+  <p style="color:var(--muted);margin-bottom:40px;">Knowing the setup is 50% of it. These mistakes will erase profits even when your analysis is right.</p>
+
+  <div class="mistakes">
+
+    <div class="mistake">
+      <div class="mistake-header"><span class="mistake-x">✗</span><h3>Trading Without a Valid HTF Zone</h3></div>
+      <p>The 5m setup looks perfect — sweep, FVG, displacement, MSS, all four steps. But price is not inside a BPR, iFVG, or Layered OB+FVG on the 4H or higher. You enter anyway. This is the most common reason clean-looking setups fail. Without HTF context, the "algorithm" you're trading is just noise. The bot checks this first, before scoring anything else.</p>
+      <div class="fix">✓ No valid 4H+ zone present = no score from Hermes = no trade. Playbook Section 1.5.</div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-header"><span class="mistake-x">✗</span><h3>Taking a Setup Before 8:30 PM</h3></div>
+      <p>The window opens at 8:15 but the first 15 minutes is setup formation, not execution. Price is establishing direction, finding its range, generating the levels that become the evening's sweep targets. Setups that trigger in this window have a significantly lower completion rate. The urgency to be "in early" is a trap.</p>
+      <div class="fix">✓ Sweet spot starts at 8:30 PM. Setups before 8:30 = treat with extreme skepticism.</div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-header"><span class="mistake-x">✗</span><h3>Ignoring the Volume Filter</h3></div>
+      <p>Displacement looks strong. Body close through the FVG. MSS on 5m confirmed. But the volume on the displacement candle is 0.8× average, not 1.5×. You enter anyway. Price retraces back through the iFVG, your limit fills, and the move never carries. Low-volume displacement means institutions are not behind this move — it's a retail-driven fake.</p>
+      <div class="fix">✓ Displacement volume must be ≥ 1.5× SMA(20) on 1m. Below threshold = Hermes flags D10 = skip.</div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-header"><span class="mistake-x">✗</span><h3>Trading Consolidation</h3></div>
+      <p>The chart looks "active" but price is actually ranging — overlapping wicks, no clear swing structure, candles that partially retrace each other. You see what looks like a sweep and enter. The market chops through your stop and then through your would-be target. Consolidation kills this playbook because it depends on directional algorithmic delivery.</p>
+      <div class="fix">✓ If you cannot identify HH/HL or LH/LL in 30 seconds on 1H + 4H — close the laptop. Not debatable.</div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-header"><span class="mistake-x">✗</span><h3>Misaligned HTF Bias</h3></div>
+      <p>Daily candles are green (bullish bias). But 4H candles are mixed or red. You go long anyway based on the daily alone. The 4H structure is telling you something the daily isn't — a local pullback that could be the start of a real correction. All three timeframes (D/4H/1H) must show same-color alignment or no trade exists.</p>
+      <div class="fix">✓ All three timeframes must agree. One timeframe against the bias = no trade tonight.</div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-header"><span class="mistake-x">✗</span><h3>Abusing the Second-Chance Rule</h3></div>
+      <p>You took a loss. You invoke the second-chance rule. But the stop-out didn't form a clean new check point — it was just random slippage. You force a re-entry. This is not a second chance, it's revenge trading with extra steps. The second-chance rule has a hard condition: the FULL 4-step sequence must re-form cleanly off the stop-out level.</p>
+      <div class="fix">✓ Second-chance requires all 4 steps from scratch. If you're rationalizing, you're not second-chancing.</div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-header"><span class="mistake-x">✗</span><h3>Trading After Rule A or Rule B Triggers</h3></div>
+      <p>You've taken 2 losses (Rule A trigger). The session is over. But a "perfect" setup forms at 9:45 PM. You enter. You lose again. Now you're at 3 losses, the Rule D target math is broken, and you've burned through $540 on a session where you should have stopped at $360. Rules A and B exist because 2 losses in a session is a signal — something is off in the market or in your head.</p>
+      <div class="fix">✓ Rule A = 2 losses = session over. Rule B = $360 hit = session over. No exceptions. No "just one more."</div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-header"><span class="mistake-x">✗</span><h3>Giving Back After Rule D Triggers</h3></div>
+      <p>You hit your 30-point target. First trade of the session, +$180, beautiful. A new setup immediately forms. You take it "since the session is still open." You lose. Now you've given back your winner and are down $180 on a session that was up $180. Rule D exists for one reason: the highest-probability trade of giving back a winner is the trade you take right after a winner.</p>
+      <div class="fix">✓ Target hit = session over. Laptop closes. This rule is non-negotiable.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ SECTION 08 ═══════════════════════════════════════════════ -->
+<section class="section" id="s08">
+  <div class="section-label">Section 08</div>
+  <h2>Pre-Trade Checklist</h2>
+  <p style="color:var(--muted);margin-bottom:16px;">Run this before and during every session. Every item must be checked before pressing the entry button. Click each item to mark it complete.</p>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-label">Position Size</div>
+      <div class="rule-value">3 MNQ</div>
+      <div class="rule-desc">Starting size — $50K eval</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-label">Rule A — Session Max Losses</div>
+      <div class="rule-value">2 STOPS</div>
+      <div class="rule-desc">After 2 losses → session over</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-label">Rule B — Daily Loss Limit</div>
+      <div class="rule-value">$360</div>
+      <div class="rule-desc">Hard stop, no exceptions</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-label">Rule D — Target Lockout</div>
+      <div class="rule-value">30 pts</div>
+      <div class="rule-desc">Hit target → session over</div>
+    </div>
+  </div>
+
+  <!-- CONTEXT GROUP -->
+  <div class="checklist-group">
+    <div class="checklist-group-title">CONTEXT — SET BY 8:00 PM</div>
+
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Daily + 4H + 1H bias aligned — same-color candle check passes</div>
+        <div class="check-sub">D: last 2 candles same color / 4H: last 2 same + matching D / 1H: last 4 same + matching D+4H</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">100 EMA position confirmed on D, 4H, 1H — price not straddling</div>
+        <div class="check-sub">Price above 100 EMA = bullish OK / price below = bearish OK / straddling = no trade</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Valid HTF zone identified — BPR, iFVG, or Layered OB+FVG on 4H or higher</div>
+        <div class="check-sub">No valid zone = no trade. Period. A standard OB alone does not qualify.</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Previous session H/L marked + equilibrium of current leg drawn</div>
+        <div class="check-sub">Also mark any unmitigated highs/lows from earlier in the week</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Check points marked inside every HTF zone</div>
+        <div class="check-sub">Equal highs, equal lows, prior swings — the specific levels that will be swept</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Market structure is HH/HL or LH/LL — no consolidation</div>
+        <div class="check-sub">Verify on 1H and 4H. Can you identify the structure in 30 seconds?</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Personal state check passes (Rule C)</div>
+        <div class="check-sub">6+ hrs sleep / not revenge trading / not emotionally activated / not on cold meds</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">No major Asian central bank event inside 8:15–11:00 PM window</div>
+        <div class="check-sub">Check ForexFactory. BOJ, RBA, RBNZ decisions inside window = no trade</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRIGGER GROUP -->
+  <div class="checklist-group">
+    <div class="checklist-group-title">TRIGGER — WATCH IN REAL TIME (8:15 PM+)</div>
+
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Clock is inside the window — 8:15 PM to 11:00 PM ET</div>
+        <div class="check-sub">After 10:30 PM only A+ setups qualify. No new entries after 11:00 PM.</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Price approaches HTF zone with velocity — not drifting in</div>
+        <div class="check-sub">The approach must be a sharp directional move. Slow drift into zone = weak setup</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Check point sweep confirmed inside the HTF zone</div>
+        <div class="check-sub">1m or 5m wick beyond internal liquidity pool — candle CLOSES BACK inside zone (not beyond)</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">FVG formed on the sweeping leg</div>
+        <div class="check-sub">Same candle/leg that swept the check point creates the 3-candle imbalance</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Displacement candle: strong BODY close through FVG in opposite direction</div>
+        <div class="check-sub">Body close only — wick close does not count. One candle is sufficient.</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Volume filter passes: displacement candle ≥ 1.5× SMA(volume, 20) on 1m</div>
+        <div class="check-sub">Hermes checks this automatically. If D10 fails — Hermes says SKIP — you skip.</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">5m MSS confirmed — last swing point from sweep wick is broken</div>
+        <div class="check-sub">Market structure has officially shifted on 5m. Without this, displacement alone is not enough.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENTRY GROUP -->
+  <div class="checklist-group">
+    <div class="checklist-group-title">ENTRY — ONLY WHEN ALL ABOVE ARE CHECKED</div>
+
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Hermes Discord alert received — confluence score ≥ 6/10 preferred</div>
+        <div class="check-sub">Hermes verdict TAKE = proceed / SKIP = do not trade / WAIT = hold judgment</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Limit order set at near edge of iFVG before price arrives</div>
+        <div class="check-sub">Not a market order. Not chasing. Limit placed and waiting — or the trade is skipped.</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Stop loss set at sweep wick high/low before entry fires</div>
+        <div class="check-sub">Stop is at the actual wick level — this is the risk definition. Never move it after entry.</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Target set: 30 pts (1R) default or 60 pts (2R) with structural confirmation</div>
+        <div class="check-sub">Use 2R only when: next HTF liquidity sits beyond 60 pts AND setup formed before 9:30 PM</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Rules A and B have not triggered — session loss count below limit</div>
+        <div class="check-sub">Rule A: 0–1 losses this session (2nd loss = no entry) / Rule B: daily $ loss under $360</div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)">
+      <div class="check-box"></div>
+      <div class="check-text">
+        <div class="check-main">Rule D has not triggered — no winner taken this session yet</div>
+        <div class="check-sub">If you already hit a 30-point target today, this checklist should not be open.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <button class="checklist-reset" onclick="resetChecklist()">RESET CHECKLIST</button>
+    <div class="checklist-status">Items checked: <span id="check-count">0</span> / 21</div>
+  </div>
+
+</section>
+
+<!-- ══ SECTION 09 ═══════════════════════════════════════════════ -->
+<section class="section" id="s09">
+  <div class="section-label">Section 09</div>
+  <h2>The Mental Game</h2>
+  <p style="color:var(--muted);margin-bottom:40px;">The method works. What breaks traders is not the strategy — it's the space between knowing what to do and actually doing it when real money is on the line.</p>
+
+  <div class="mental-cards">
+    <div class="mental-card">
+      <div class="mental-icon">📊</div>
+      <h3>Think in Probabilities</h3>
+      <p>Even a 60% win rate means losing 4 out of 10 trades. A losing streak of 5–6 trades in a row can happen while doing everything right. Never change the model because of a streak. The bot keeps trading the model regardless. So should you — until the data tells you otherwise.</p>
+    </div>
+    <div class="mental-card">
+      <div class="mental-icon">🧱</div>
+      <h3>Build Data First</h3>
+      <p>Run the QuantConnect backtest before trading live. Spend 30 sessions in observe-only mode with Hermes logging setups you didn't take. Build the Supabase dataset. Confidence comes from evidence, not hope. The bot was built the same way: test first, trade second.</p>
+    </div>
+    <div class="mental-card">
+      <div class="mental-icon">⏳</div>
+      <h3>Most Sessions = No Trade</h3>
+      <p>Forcing a trade when the setup isn't there is how accounts blow up. The best traders sit on their hands for an entire 2-hour session. No setup = no trade is a successful session. Hermes not firing an alert is not a failure — it's the playbook working correctly.</p>
+    </div>
+    <div class="mental-card">
+      <div class="mental-icon">📓</div>
+      <h3>Journal Every Session</h3>
+      <p>At 11:00 PM, Hermes posts the session recap automatically. You write three lines: what was the bias, what was your execution grade (A/B/C/F), and one sentence on the biggest lesson. After 50 sessions, patterns in your wins and losses will emerge that no one can teach you.</p>
+    </div>
+    <div class="mental-card">
+      <div class="mental-icon">🔬</div>
+      <h3>3 Losses = Study, Not Trade</h3>
+      <p>After 3 consecutive losing sessions, trading is paused. Not rested for a day and back at it — paused until a structured review finds the root cause. Was it the playbook? Your execution? The market regime? Answer that question before returning. Return to trading with a theory, not hope.</p>
+    </div>
+    <div class="mental-card">
+      <div class="mental-icon">📈</div>
+      <h3>Size Up on Data, Not Emotion</h3>
+      <p>We start at 3 MNQ. We move to 4 MNQ after $500 banked. We move to 5 MNQ after $1,500 banked. Any session that erases the threshold steps back down. You do not size up because you "feel good" or had a 3-win streak. You size up because the data says you've earned it.</p>
+    </div>
+  </div>
+
+  <div class="quote">
+    <p>"The goal is not to trade more. The goal is to wait for the setup where all 4 steps are present, inside a valid HTF zone, with volume confirmation — and then execute without hesitation. Every great trade starts with the discipline to wait. Every blown account starts with a trade that 'looked good enough.'"</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <h2>NQ WAR ROOM</h2>
+  <p>iFVG SWEEP REVERSAL · 4 STEPS · ASIA SESSION ONLY · 8:15–11 PM ET · MNQ FUTURES</p>
+  <p style="margin-top:12px;">v1.0 · Updated June 2026 · For personal use only</p>
+</footer>
+
+<script>
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    updateCount();
+  }
+
+  function updateCount() {
+    const total   = document.querySelectorAll('.check-item').length;
+    const checked = document.querySelectorAll('.check-item.checked').length;
+    document.getElementById('check-count').textContent = checked;
+  }
+
+  function resetChecklist() {
+    document.querySelectorAll('.check-item').forEach(el => el.classList.remove('checked'));
+    updateCount();
+  }
+
+  // Smooth fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.step, .term, .mistake, .mental-card, .concept-card, .routine-step').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
